@@ -1,90 +1,60 @@
+from tkinter import *
+import string
 import random
+import pyperclip
 
-import array
- 
-# maximum length of password needed
-# this can be changed to suit your password length
 
-MAX_LEN = 12
- 
-# declare arrays of the character that we need in out password
-# Represented as chars to enable easy string concatenation
+def generator():
+    small_alphabets=string.ascii_lowercase
+    capital_alphabets=string.ascii_uppercase
+    numbers=string.digits
+    special_charecters=string.punctuation
 
-DIGITS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']  
+    all=small_alphabets+capital_alphabets+numbers+special_charecters
+    password_length=int(length_Box.get())
 
-LOCASE_CHARACTERS = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 
+    if choice.get()==1: #weak
+        passwordField.insert(0,random.sample(small_alphabets,password_length))
 
-                     'i', 'j', 'k', 'm', 'n', 'o', 'p', 'q',
+    if choice.get()==2:  #Medium
+        passwordField.insert(0,random.sample(small_alphabets+capital_alphabets,password_length))
 
-                     'r', 's', 't', 'u', 'v', 'w', 'x', 'y',
+    if choice.get()==3: #Strong
+        passwordField.insert(0,random.sample(all,password_length))
 
-                     'z']
- 
 
-UPCASE_CHARACTERS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 
+def copy():
+    random_password=passwordField.get()
+    pyperclip.copy(random_password)
 
-                     'I', 'J', 'K', 'M', 'N', 'O', 'P', 'Q',
+root=Tk()
+root.config(bg='gray20')
+choice=IntVar()
+Font=('arial',13,'bold')
+passwordLabel=Label(root,text='Password Generator',font=('times new roman',20,'bold'),bg='gray20',fg='white')
+passwordLabel.grid(pady=10)
+weakradioButton=Radiobutton(root,text='Weak',value=1,variable=choice,font=Font)
+weakradioButton.grid(pady=5)
 
-                     'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y',
+mediumradioButton=Radiobutton(root,text='Medium',value=2,variable=choice,font=Font)
+mediumradioButton.grid(pady=5)
 
-                     'Z']
- 
+strongradioButton=Radiobutton(root,text='Strong',value=3,variable=choice,font=Font)
+strongradioButton.grid(pady=5)
 
-SYMBOLS = ['@', '#', '$', '%', '=', ':', '?', '.', '/', '|', '~', '>', 
+lengthLabel=Label(root,text='Password Length',font=Font,bg='gray20',fg='white')
+lengthLabel.grid(pady=5)
 
-           '*', '(', ')', '<']
- 
-# combines all the character arrays above to form one array
+length_Box=Spinbox(root,from_=5,to_=18,width=5,font=Font)
+length_Box.grid(pady=5)
 
-COMBINED_LIST = DIGITS + UPCASE_CHARACTERS + LOCASE_CHARACTERS + SYMBOLS
- 
-# randomly select at least one character from each character set above
+generateButton=Button(root,text='Generate',font=Font,command=generator)
+generateButton.grid(pady=5)
 
-rand_digit = random.choice(DIGITS)
+passwordField=Entry(root,width=25,bd=2,font=Font)
+passwordField.grid()
 
-rand_upper = random.choice(UPCASE_CHARACTERS)
+copyButton=Button(root,text='Copy',font=Font,command=copy)
+copyButton.grid(pady=5)
 
-rand_lower = random.choice(LOCASE_CHARACTERS)
-
-rand_symbol = random.choice(SYMBOLS)
- 
-# combine the character randomly selected above
-# at this stage, the password contains only 4 characters but 
-# we want a 12-character password
-
-temp_pass = rand_digit + rand_upper + rand_lower + rand_symbol
- 
- 
-# now that we are sure we have at least one character from each
-# set of characters, we fill the rest of
-# the password length by selecting randomly from the combined 
-# list of character above.
-
-for x in range(MAX_LEN - 4):
-
-    temp_pass = temp_pass + random.choice(COMBINED_LIST)
- 
-
-    # convert temporary password into array and shuffle to 
-
-    # prevent it from having a consistent pattern
-
-    # where the beginning of the password is predictable
-
-    temp_pass_list = array.array('u', temp_pass)
-
-    random.shuffle(temp_pass_list)
- 
-# traverse the temporary password array and append the chars
-# to form the password
-
-password = ""
-
-for x in temp_pass_list:
-
-        password = password + x
-
-         
-# print out password
-
-print(password)
+root.mainloop()
